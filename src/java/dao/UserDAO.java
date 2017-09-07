@@ -9,7 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import model.UserProfile;
+import model.UserMDL;
+import model.UserProfileMDL;
 
 /**
  *
@@ -31,10 +32,28 @@ public class UserDAO {
         return instance;
     }
 
+    public UserProfileMDL profile(String profile) {
+        UserProfileMDL userProfileMDL = new UserProfileMDL();
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement("SELECT * FROM a_users_profiles WHERE u_p_user=?");
+            preparedStatement.setString(1, profile);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                userProfileMDL.setId(rs.getInt("u_p_key"));
+                userProfileMDL.setName(rs.getString("u_p_name"));
+                userProfileMDL.setUser(rs.getString("u_p_user"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userProfileMDL;
+    }
+
     public String getUserPassword(int id) {
         try {
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("SELECT * FROM j_user WHERE u_key=?");
+                    .prepareStatement("SELECT * FROM a_users WHERE u_key=?");
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
@@ -46,15 +65,15 @@ public class UserDAO {
         return null;
     }
 
-    public Integer deleteAccount(UserProfile profile) {
+    public Integer deleteAccount(UserMDL userMDL) {
         try {
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("DELETE FROM j_user_profile WHERE u_p_key=?");
-            preparedStatement.setInt(1, profile.getId());
+                    .prepareStatement("DELETE FROM a_users_profiles WHERE u_p_key=?");
+            preparedStatement.setInt(1, userMDL.getId());
             preparedStatement.executeUpdate();
             PreparedStatement preparedStatement2 = connection
-                    .prepareStatement("DELETE FROM j_user WHERE u_key=?");
-            preparedStatement2.setInt(1, profile.getId());
+                    .prepareStatement("DELETE FROM a_users WHERE u_key=?");
+            preparedStatement2.setInt(1, userMDL.getId());
             preparedStatement2.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -63,12 +82,12 @@ public class UserDAO {
         }
     }
 
-    public Integer changePassword(UserProfile profile) {
+    public Integer changePassword(UserMDL userMDL) {
         try {
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE j_user SET u_password=? WHERE u_key=?");
-            preparedStatement.setString(1, profile.getPassword());
-            preparedStatement.setInt(2, profile.getId());
+                    .prepareStatement("UPDATE a_users SET u_password=? WHERE u_key=?");
+            preparedStatement.setString(1, userMDL.getPassword());
+            preparedStatement.setInt(2, userMDL.getId());
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -77,12 +96,12 @@ public class UserDAO {
         }
     }
 
-    public Integer changeEmail(UserProfile profile) {
+    public Integer changeUser(UserProfileMDL userProfileMDL) {
         try {
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE j_user SET u_email=? WHERE u_key=?");
-            preparedStatement.setString(1, profile.getEmail());
-            preparedStatement.setInt(2, profile.getId());
+                    .prepareStatement("UPDATE a_users_profiles SET u_p_user=? WHERE u_p_key=?");
+            preparedStatement.setString(1, userProfileMDL.getUser());
+            preparedStatement.setInt(2, userProfileMDL.getId());
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -91,14 +110,83 @@ public class UserDAO {
         }
     }
 
-    public Integer editProfile(UserProfile profile) {
+    public Integer changeEmail(UserMDL userMDL) {
         try {
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE j_user_profile SET u_p_name=?, u_p_user=? WHERE u_p_key=?");
+                    .prepareStatement("UPDATE a_users SET u_email=? WHERE u_key=?");
+            preparedStatement.setString(1, userMDL.getEmail());
+            preparedStatement.setInt(2, userMDL.getId());
+            preparedStatement.executeUpdate();
+            return 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public Integer editProfile(UserProfileMDL profile) {
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement("UPDATE a_users_profiles SET u_p_name=? WHERE u_p_key=?");
             preparedStatement.setString(1, profile.getName());
-            preparedStatement.setString(2, profile.getUser());
-            preparedStatement.setInt(3, profile.getId());
+            preparedStatement.setInt(2, profile.getId());
             preparedStatement.executeUpdate();
+            return 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public UserProfileMDL signIn(String email) {
+        UserProfileMDL profile = new UserProfileMDL();
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement("SELECT * FROM a_users AS u JOIN a_users_profiles AS up ON u.u_key=up.u_p_key WHERE u.u_email=?");
+            preparedStatement.setString(1, email);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                profile.setId(rs.getInt("u_key"));
+                profile.setEmail(rs.getString("u_email"));
+                profile.setPassword(rs.getString("u_password"));
+                profile.setName(rs.getString("u_p_name"));
+                profile.setUser(rs.getString("u_p_user"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return profile;
+    }
+
+    public Integer getIdSignUp(String email) {
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement("SELECT * FROM a_users WHERE u_email=?");
+            preparedStatement.setString(1, email);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("u_key");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Integer signUp(UserMDL user) {
+        try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement("INSERT INTO a_users(u_email,u_password) VALUES(?,?)");
+            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.executeUpdate();
+            int id = this.getIdSignUp(user.getEmail());
+            PreparedStatement preparedStatement2 = connection
+                    .prepareStatement("INSERT INTO a_users_profiles(u_p_key,u_p_user,u_p_name) VALUES(?,?,?)");
+            preparedStatement2.setInt(1, id);
+            preparedStatement2.setString(2, "usuario" + id);
+            preparedStatement2.setString(3, "Usuario" + id);
+            preparedStatement2.executeUpdate();
             return 1;
         } catch (SQLException e) {
             e.printStackTrace();

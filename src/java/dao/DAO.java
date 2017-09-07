@@ -24,7 +24,7 @@ public class DAO {
         if (connection == null) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/JSPServletsTemplate", "root", "1029384756");
+                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/application", "root", "1029384756");
             } catch (Exception e) {
                 e.printStackTrace();
             }

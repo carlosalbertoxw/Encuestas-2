@@ -7,7 +7,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="${path}Session?page=dashboard">${name}</a>
+            <a class="navbar-brand" href="${path}Poll?page=dashboard">${name}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -16,6 +16,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="${path}?profile=${s_user}">Ver perfil</a></li>
                         <li><a href="${path}User?page=edit-profile">Editar perfil</a></li>
+                        <li><a href="${path}User?page=change-user">Cambiar usuario</a></li>
                         <li><a href="${path}User?page=change-email">Cambiar correo electrónico</a></li>
                         <li><a href="${path}User?page=change-password">Cambiar contraseña</a></li>
                         <li><a href="${path}User?page=delete-account">Borrar cuenta</a></li>

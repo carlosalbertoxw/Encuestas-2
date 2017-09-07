@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <welcome-file-list>
-        <welcome-file>Public</welcome-file>
+        <welcome-file>User</welcome-file>
     </welcome-file-list>
     <error-page>
         <error-code>404</error-code>
-        <location>/view/public/error404.jsp</location>
+        <location>/view/error404.jsp</location>
     </error-page>
     <servlet>
-        <servlet-name>Public</servlet-name>
-        <servlet-class>controller.Public</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Session</servlet-name>
-        <servlet-class>controller.Session</servlet-class>
+        <servlet-name>Poll</servlet-name>
+        <servlet-class>controller.Poll</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>User</servlet-name>
         <servlet-class>controller.User</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Public</servlet-name>
-        <url-pattern>/Public</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Session</servlet-name>
-        <url-pattern>/Session</url-pattern>
+        <servlet-name>Poll</servlet-name>
+        <url-pattern>/Poll</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>User</servlet-name>
