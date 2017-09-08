@@ -136,8 +136,8 @@ public class Answer extends HttpServlet {
             view.forward(request, response);
         } else {
             request.getSession().setAttribute("mensaje", "Ocurrio un error en la validación de los datos");
+            response.sendRedirect(PATH + "Poll?page=dashboard");
         }
-        response.sendRedirect(PATH + "Poll?page=dashboard");
     }
 
     private void viewAnswer(HttpServletRequest request, HttpServletResponse response)
@@ -153,8 +153,8 @@ public class Answer extends HttpServlet {
             view.forward(request, response);
         } else {
             request.getSession().setAttribute("mensaje", "Ocurrio un error en la validación de los datos");
+            response.sendRedirect(PATH + "Poll?page=dashboard");
         }
-        response.sendRedirect(PATH + "Poll?page=dashboard");
     }
 
     private void error404(HttpServletRequest request, HttpServletResponse response)
