@@ -5,6 +5,7 @@
  */
 package controller;
 
+import dao.PollDAO;
 import dao.UserDAO;
 import java.io.IOException;
 import javax.servlet.RequestDispatcher;
@@ -29,7 +30,7 @@ public class User extends HttpServlet {
     private static final String CHANGEUSER = "view/session/user/changeUser.jsp";
     private static final String CHANGEPASSWORD = "view/session/user/changePassword.jsp";
     private static final String DELETEACCOUNT = "view/session/user/deleteAccount.jsp";
-    private static final String ERROR404 = "view/public/error404.jsp";
+    private static final String ERROR404 = "view/error404.jsp";
     private static final String PATH = "/Encuestas/";
     private static final String NAME = "Encuestas";
     private UserDAO dao;
@@ -150,9 +151,11 @@ public class User extends HttpServlet {
         String forward;
         if (!profile.equals("") && profile.length() <= 25) {
             UserProfileMDL userProfileMDL = dao.profile(profile);
-            if (userProfileMDL.getId() > 0) {
+            if (userProfileMDL.getUserMDL().getKey() > 0) {
+                PollDAO pollDAO = PollDAO.getInstance();
                 request.setAttribute("title", userProfileMDL.getName());
                 request.setAttribute("user", userProfileMDL.getUser());
+                request.setAttribute("polls", pollDAO.getPolls(userProfileMDL.getUserMDL().getKey()));
                 forward = PROFILE;
             } else {
                 forward = ERROR404;
@@ -169,8 +172,10 @@ public class User extends HttpServlet {
         String name = request.getParameter("name") != null ? request.getParameter("name") : "";
         if (!name.equals("") && name.length() <= 50) {
             UserProfileMDL userProfileMDL = new UserProfileMDL();
+            UserMDL userMDL = new UserMDL();
             userProfileMDL.setName(name);
-            userProfileMDL.setId(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
+            userMDL.setKey(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
+            userProfileMDL.setUserMDL(userMDL);
             int r = dao.editProfile(userProfileMDL);
             if (r == 1) {
                 request.getSession().setAttribute("mensaje", "Los datos se actualizaron exitosamente");
@@ -190,9 +195,11 @@ public class User extends HttpServlet {
         String password = request.getParameter("password") != null ? request.getParameter("password") : "";
         if (!user.equals("") && !password.equals("") && user.length() <= 25 && password.length() <= 50) {
             UserProfileMDL userProfileMDL = new UserProfileMDL();
+            UserMDL userMDL = new UserMDL();
             userProfileMDL.setUser(user);
-            userProfileMDL.setId(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
-            if (dao.getUserPassword(userProfileMDL.getId()).equals(encryption.encryptPassword(password))) {
+            userMDL.setKey(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
+            userProfileMDL.setUserMDL(userMDL);
+            if (dao.getUserPassword(userProfileMDL.getUserMDL().getKey()).equals(encryption.encryptPassword(password))) {
                 int r = dao.changeUser(userProfileMDL);
                 if (r == 1) {
                     request.getSession().setAttribute("mensaje", "Los datos se actualizaron exitosamente");
@@ -216,8 +223,8 @@ public class User extends HttpServlet {
         if (!email.equals("") && !password.equals("") && email.length() <= 50 && password.length() <= 50) {
             UserMDL userMDL = new UserMDL();
             userMDL.setEmail(email);
-            userMDL.setId(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
-            if (dao.getUserPassword(userMDL.getId()).equals(encryption.encryptPassword(password))) {
+            userMDL.setKey(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
+            if (dao.getUserPassword(userMDL.getKey()).equals(encryption.encryptPassword(password))) {
                 int r = dao.changeEmail(userMDL);
                 if (r == 1) {
                     request.getSession().setAttribute("mensaje", "Los datos se actualizaron exitosamente");
@@ -242,8 +249,8 @@ public class User extends HttpServlet {
         if (!password.equals("") && !newPassword.equals("") && !reNewPassword.equals("") && password.length() <= 50 && newPassword.length() <= 50 && reNewPassword.length() <= 50 && newPassword.equals(reNewPassword)) {
             UserMDL userMDL = new UserMDL();
             userMDL.setPassword(encryption.encryptPassword(newPassword));
-            userMDL.setId(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
-            if (dao.getUserPassword(userMDL.getId()).equals(encryption.encryptPassword(password))) {
+            userMDL.setKey(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
+            if (dao.getUserPassword(userMDL.getKey()).equals(encryption.encryptPassword(password))) {
                 int r = dao.changePassword(userMDL);
                 if (r == 1) {
                     request.getSession().setAttribute("mensaje", "Los datos se actualizaron exitosamente");
@@ -264,8 +271,8 @@ public class User extends HttpServlet {
         String password = request.getParameter("password") != null ? request.getParameter("password") : "";
         if (!password.equals("") && password.length() <= 50) {
             UserMDL userMDL = new UserMDL();
-            userMDL.setId(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
-            if (dao.getUserPassword(userMDL.getId()).equals(encryption.encryptPassword(password))) {
+            userMDL.setKey(Integer.parseInt(request.getSession().getAttribute("s_id").toString()));
+            if (dao.getUserPassword(userMDL.getKey()).equals(encryption.encryptPassword(password))) {
                 int r = dao.deleteAccount(userMDL);
                 if (r == 1) {
                     request.getSession().setAttribute("s_id", null);
@@ -335,9 +342,9 @@ public class User extends HttpServlet {
         String password = request.getParameter("password") != null ? request.getParameter("password") : "";
         if (!email.equals("") && email.length() <= 50 && !password.equals("") && password.length() <= 50) {
             UserProfileMDL profileMDL = dao.signIn(email);
-            if (profileMDL.getId() > 0 && encryption.encryptPassword(password).equals(profileMDL.getPassword())) {
-                request.getSession().setAttribute("s_id", profileMDL.getId());
-                request.getSession().setAttribute("s_email", profileMDL.getEmail());
+            if (profileMDL.getUserMDL().getKey() > 0 && encryption.encryptPassword(password).equals(profileMDL.getUserMDL().getPassword())) {
+                request.getSession().setAttribute("s_id", profileMDL.getUserMDL().getKey());
+                request.getSession().setAttribute("s_email", profileMDL.getUserMDL().getEmail());
                 request.getSession().setAttribute("s_name", profileMDL.getName());
                 request.getSession().setAttribute("s_user", profileMDL.getUser());
                 response.sendRedirect("Poll?page=dashboard");

@@ -11,16 +11,16 @@ package model;
  */
 public class UserMDL {
 
-    private int id;
+    private int key;
     private String email;
     private String password;
 
-    public int getId() {
-        return id;
+    public int getKey() {
+        return key;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setKey(int key) {
+        this.key = key;
     }
 
     public String getEmail() {

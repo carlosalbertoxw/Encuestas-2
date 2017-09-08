@@ -26,6 +26,19 @@
             </div>
             <h4 class="text-center">${title} <smal>(${user})</smal></h4>
             <div class="row">
+                <hr>
+                <c:forEach items="${polls}" var="poll">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <c:out value="${poll.title}" />
+                            <br>
+                            <c:out value="${poll.description}" />
+                        </div>
+                        <div class="panel-footer">
+                            <a href="${path}Answer?page=add-answer&key=${poll.key}">Responder</a>
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
         </div>
         <c:if test="${sessionScope.s_id == null}">

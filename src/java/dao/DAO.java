@@ -7,6 +7,7 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  *
@@ -25,8 +26,7 @@ public class DAO {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/application", "root", "1029384756");
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (ClassNotFoundException | SQLException e) {
             }
         }
         return connection;

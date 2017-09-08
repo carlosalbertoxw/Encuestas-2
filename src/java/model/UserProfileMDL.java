@@ -9,18 +9,18 @@ package model;
  *
  * @author carlos
  */
-public class UserProfileMDL extends UserMDL{
+public class UserProfileMDL {
 
-    private int id;
+    private UserMDL userMDL;
     private String name;
     private String user;
 
-    public int getId() {
-        return id;
+    public UserMDL getUserMDL() {
+        return userMDL;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserMDL(UserMDL userMDL) {
+        this.userMDL = userMDL;
     }
 
     public String getName() {

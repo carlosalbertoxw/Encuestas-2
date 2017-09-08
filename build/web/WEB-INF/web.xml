@@ -15,6 +15,10 @@
         <servlet-name>User</servlet-name>
         <servlet-class>controller.User</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Answer</servlet-name>
+        <servlet-class>controller.Answer</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Poll</servlet-name>
         <url-pattern>/Poll</url-pattern>
@@ -22,6 +26,10 @@
     <servlet-mapping>
         <servlet-name>User</servlet-name>
         <url-pattern>/User</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Answer</servlet-name>
+        <url-pattern>/Answer</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

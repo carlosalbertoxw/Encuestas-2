@@ -34,13 +34,15 @@ public class UserDAO {
 
     public UserProfileMDL profile(String profile) {
         UserProfileMDL userProfileMDL = new UserProfileMDL();
+        UserMDL userMDL = new UserMDL();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM a_users_profiles WHERE u_p_user=?");
             preparedStatement.setString(1, profile);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                userProfileMDL.setId(rs.getInt("u_p_key"));
+                userMDL.setKey(rs.getInt("u_p_key"));
+                userProfileMDL.setUserMDL(userMDL);
                 userProfileMDL.setName(rs.getString("u_p_name"));
                 userProfileMDL.setUser(rs.getString("u_p_user"));
             }
@@ -69,11 +71,11 @@ public class UserDAO {
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("DELETE FROM a_users_profiles WHERE u_p_key=?");
-            preparedStatement.setInt(1, userMDL.getId());
+            preparedStatement.setInt(1, userMDL.getKey());
             preparedStatement.executeUpdate();
             PreparedStatement preparedStatement2 = connection
                     .prepareStatement("DELETE FROM a_users WHERE u_key=?");
-            preparedStatement2.setInt(1, userMDL.getId());
+            preparedStatement2.setInt(1, userMDL.getKey());
             preparedStatement2.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -87,7 +89,7 @@ public class UserDAO {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users SET u_password=? WHERE u_key=?");
             preparedStatement.setString(1, userMDL.getPassword());
-            preparedStatement.setInt(2, userMDL.getId());
+            preparedStatement.setInt(2, userMDL.getKey());
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -101,7 +103,7 @@ public class UserDAO {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users_profiles SET u_p_user=? WHERE u_p_key=?");
             preparedStatement.setString(1, userProfileMDL.getUser());
-            preparedStatement.setInt(2, userProfileMDL.getId());
+            preparedStatement.setInt(2, userProfileMDL.getUserMDL().getKey());
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -115,7 +117,7 @@ public class UserDAO {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users SET u_email=? WHERE u_key=?");
             preparedStatement.setString(1, userMDL.getEmail());
-            preparedStatement.setInt(2, userMDL.getId());
+            preparedStatement.setInt(2, userMDL.getKey());
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -129,7 +131,7 @@ public class UserDAO {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users_profiles SET u_p_name=? WHERE u_p_key=?");
             preparedStatement.setString(1, profile.getName());
-            preparedStatement.setInt(2, profile.getId());
+            preparedStatement.setInt(2, profile.getUserMDL().getKey());
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
@@ -140,15 +142,17 @@ public class UserDAO {
 
     public UserProfileMDL signIn(String email) {
         UserProfileMDL profile = new UserProfileMDL();
+        UserMDL userMDL = new UserMDL();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM a_users AS u JOIN a_users_profiles AS up ON u.u_key=up.u_p_key WHERE u.u_email=?");
             preparedStatement.setString(1, email);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                profile.setId(rs.getInt("u_key"));
-                profile.setEmail(rs.getString("u_email"));
-                profile.setPassword(rs.getString("u_password"));
+                userMDL.setEmail(rs.getString("u_email"));
+                userMDL.setPassword(rs.getString("u_password"));
+                userMDL.setKey(rs.getInt("u_key"));
+                profile.setUserMDL(userMDL);
                 profile.setName(rs.getString("u_p_name"));
                 profile.setUser(rs.getString("u_p_user"));
             }
