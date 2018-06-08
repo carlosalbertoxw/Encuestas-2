@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.AnswerMDL;
 import model.PollMDL;
 import model.UserMDL;
@@ -22,21 +24,8 @@ import model.UserProfileMDL;
  */
 public class AnswerDAO {
 
-    private static AnswerDAO instance;
-    private static Connection connection;
-
-    private AnswerDAO() {
-        connection = DAO.getConnection();
-    }
-
-    public static AnswerDAO getInstance() {
-        if (instance == null) {
-            instance = new AnswerDAO();
-        }
-        return instance;
-    }
-
     public List<AnswerMDL> getAnswers(int userKey, int pollKey) {
+        Connection connection = DAO.getConnection();
         List<AnswerMDL> list = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection
@@ -61,11 +50,15 @@ public class AnswerDAO {
                 list.add(answerMDL);
             }
         } catch (SQLException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        } finally {
+            DAO.closeConnection(connection);
         }
         return list;
     }
 
     public Integer addAnswer(AnswerMDL answerMDL) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO a_answers(a_stars,a_comment,a_poll_key,a_user_key) VALUES(?,?,?,?)");
@@ -76,7 +69,10 @@ public class AnswerDAO {
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 }

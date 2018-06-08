@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.UserMDL;
 import model.UserProfileMDL;
 
@@ -18,21 +20,8 @@ import model.UserProfileMDL;
  */
 public class UserDAO {
 
-    private static UserDAO instance;
-    private static Connection connection;
-
-    private UserDAO() {
-        connection = DAO.getConnection();
-    }
-
-    public static UserDAO getInstance() {
-        if (instance == null) {
-            instance = new UserDAO();
-        }
-        return instance;
-    }
-
     public UserProfileMDL profile(String profile) {
+        Connection connection = DAO.getConnection();
         UserProfileMDL userProfileMDL = new UserProfileMDL();
         UserMDL userMDL = new UserMDL();
         try {
@@ -47,12 +36,15 @@ public class UserDAO {
                 userProfileMDL.setUser(rs.getString("u_p_user"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        } finally {
+            DAO.closeConnection(connection);
         }
         return userProfileMDL;
     }
 
     public String getUserPassword(int id) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM a_users WHERE u_key=?");
@@ -62,12 +54,15 @@ public class UserDAO {
                 return rs.getString("u_password");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        } finally {
+            DAO.closeConnection(connection);
         }
         return null;
     }
 
     public Integer deleteAccount(UserMDL userMDL) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("DELETE FROM a_users_profiles WHERE u_p_key=?");
@@ -79,12 +74,15 @@ public class UserDAO {
             preparedStatement2.executeUpdate();
             return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 
     public Integer changePassword(UserMDL userMDL) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users SET u_password=? WHERE u_key=?");
@@ -93,12 +91,15 @@ public class UserDAO {
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 
     public Integer changeUser(UserProfileMDL userProfileMDL) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users_profiles SET u_p_user=? WHERE u_p_key=?");
@@ -107,12 +108,15 @@ public class UserDAO {
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 
     public Integer changeEmail(UserMDL userMDL) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users SET u_email=? WHERE u_key=?");
@@ -121,12 +125,15 @@ public class UserDAO {
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 
     public Integer editProfile(UserProfileMDL profile) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users_profiles SET u_p_name=? WHERE u_p_key=?");
@@ -135,12 +142,15 @@ public class UserDAO {
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 
     public UserProfileMDL signIn(String email) {
+        Connection connection = DAO.getConnection();
         UserProfileMDL profile = new UserProfileMDL();
         UserMDL userMDL = new UserMDL();
         try {
@@ -157,12 +167,15 @@ public class UserDAO {
                 profile.setUser(rs.getString("u_p_user"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        } finally {
+            DAO.closeConnection(connection);
         }
         return profile;
     }
 
     public Integer getIdSignUp(String email) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM a_users WHERE u_email=?");
@@ -172,12 +185,15 @@ public class UserDAO {
                 return rs.getInt("u_key");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        } finally {
+            DAO.closeConnection(connection);
         }
         return null;
     }
 
     public Integer signUp(UserMDL user) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO a_users(u_email,u_password) VALUES(?,?)");
@@ -193,8 +209,10 @@ public class UserDAO {
             preparedStatement2.executeUpdate();
             return 1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 }

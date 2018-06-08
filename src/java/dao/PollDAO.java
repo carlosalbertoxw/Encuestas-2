@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.PollMDL;
 import model.UserMDL;
 import model.UserProfileMDL;
@@ -21,21 +23,8 @@ import model.UserProfileMDL;
  */
 public class PollDAO {
 
-    private static PollDAO instance;
-    private static Connection connection;
-
-    private PollDAO() {
-        connection = DAO.getConnection();
-    }
-
-    public static PollDAO getInstance() {
-        if (instance == null) {
-            instance = new PollDAO();
-        }
-        return instance;
-    }
-
     public Integer deletePoll(int pollKey, int userProfileKey) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("DELETE FROM a_answers WHERE a_poll_key=?");
@@ -49,11 +38,15 @@ public class PollDAO {
             preparedStatement1.executeUpdate();
             return 1;
         } catch (SQLException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 
     public Integer updatePoll(PollMDL pollMDL) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_polls SET p_title=?, p_description=?, p_position=? WHERE p_user_key=? AND p_key=?");
@@ -65,11 +58,15 @@ public class PollDAO {
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 
     public PollMDL getPoll(int pollKey) {
+        Connection connection = DAO.getConnection();
         PollMDL pollMDL = new PollMDL();
         UserProfileMDL userProfileMDL = new UserProfileMDL();
         UserMDL userMDL = new UserMDL();
@@ -91,11 +88,15 @@ public class PollDAO {
                 pollMDL.setUserProfileMDL(userProfileMDL);
             }
         } catch (SQLException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        } finally {
+            DAO.closeConnection(connection);
         }
         return pollMDL;
     }
 
     public List<PollMDL> getPolls(int userKey) {
+        Connection connection = DAO.getConnection();
         List<PollMDL> list = new ArrayList();
         try {
             PreparedStatement preparedStatement = connection
@@ -117,11 +118,15 @@ public class PollDAO {
                 list.add(pollMDL);
             }
         } catch (SQLException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
+        } finally {
+            DAO.closeConnection(connection);
         }
         return list;
     }
 
     public Integer addPoll(PollMDL pollMDL) {
+        Connection connection = DAO.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO a_polls(p_title,p_description,p_position,p_user_key) VALUES(?,?,?,?)");
@@ -132,7 +137,10 @@ public class PollDAO {
             preparedStatement.executeUpdate();
             return 1;
         } catch (SQLException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
+        } finally {
+            DAO.closeConnection(connection);
         }
     }
 }

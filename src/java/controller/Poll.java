@@ -25,12 +25,12 @@ public class Poll extends HttpServlet {
     private static final String DASHBOARD = "view/session/poll/dashboard.jsp";
     private static final String POLL = "view/session/poll/poll.jsp";
     private static final String ERROR404 = "view/error404.jsp";
-    private static final String PATH = "/Encuestas/";
+    private static final String PATH = "/Encuestas-JSPs-Servlets/";
     private static final String NAME = "Encuestas";
     private PollDAO dao;
 
     public Poll() {
-        dao = PollDAO.getInstance();
+        dao = new PollDAO();
     }
 
     /**

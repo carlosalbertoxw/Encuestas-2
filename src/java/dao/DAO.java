@@ -8,6 +8,8 @@ package dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,21 +17,27 @@ import java.sql.SQLException;
  */
 public class DAO {
 
-    private static Connection connection = null;
-
     private DAO() {
 
     }
 
-    public static Connection getConnection() {
-        if (connection == null) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/application", "root", "1029384756");
-            } catch (ClassNotFoundException | SQLException e) {
-            }
+    protected static Connection getConnection() {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/application", "root", "qwerty");
+        } catch (ClassNotFoundException | SQLException e) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, e);
         }
         return connection;
+    }
+
+    protected static void closeConnection(Connection connection) {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
 
 }

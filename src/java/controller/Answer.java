@@ -27,12 +27,12 @@ public class Answer extends HttpServlet {
     private static final String VIEWANSWERS = "view/session/answer/viewAnswers.jsp";
     private static final String ANSWER = "view/public/answer/answer.jsp";
     private static final String ERROR404 = "view/error404.jsp";
-    private static final String PATH = "/Encuestas/";
+    private static final String PATH = "/Encuestas-JSPs-Servlets/";
     private static final String NAME = "Encuestas";
     private AnswerDAO dao;
 
     public Answer() {
-        dao = AnswerDAO.getInstance();
+        dao = new AnswerDAO();
     }
 
     /**
@@ -128,7 +128,7 @@ public class Answer extends HttpServlet {
             throws ServletException, IOException {
         int key = request.getParameter("key") != null ? Integer.parseInt(request.getParameter("key")) : 0;
         if (key != 0 && String.valueOf(key).length() <= 10) {
-            PollDAO pollDAO = PollDAO.getInstance();
+            PollDAO pollDAO = new PollDAO();
             PollMDL pollMDL = pollDAO.getPoll(key);
             request.setAttribute("poll", pollMDL);
             request.setAttribute("title", "Responder - " + pollMDL.getTitle());
@@ -144,7 +144,7 @@ public class Answer extends HttpServlet {
             throws ServletException, IOException {
         int pollKey = request.getParameter("key") != null ? Integer.parseInt(request.getParameter("key")) : 0;
         if (pollKey != 0 && String.valueOf(pollKey).length() <= 10) {
-            PollDAO pollDAO = PollDAO.getInstance();
+            PollDAO pollDAO = new PollDAO();
             PollMDL pollMDL = pollDAO.getPoll(pollKey);
             request.setAttribute("poll", pollMDL);
             request.setAttribute("title", "Respuestas - " + pollMDL.getTitle());

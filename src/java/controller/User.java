@@ -31,13 +31,13 @@ public class User extends HttpServlet {
     private static final String CHANGEPASSWORD = "view/session/user/changePassword.jsp";
     private static final String DELETEACCOUNT = "view/session/user/deleteAccount.jsp";
     private static final String ERROR404 = "view/error404.jsp";
-    private static final String PATH = "/Encuestas/";
+    private static final String PATH = "/Encuestas-JSPs-Servlets/";
     private static final String NAME = "Encuestas";
     private UserDAO dao;
     private Encryption encryption;
 
     public User() {
-        dao = UserDAO.getInstance();
+        dao = new UserDAO();
         encryption = new Encryption();
     }
 
@@ -152,7 +152,7 @@ public class User extends HttpServlet {
         if (!profile.equals("") && profile.length() <= 25) {
             UserProfileMDL userProfileMDL = dao.profile(profile);
             if (userProfileMDL.getUserMDL().getKey() > 0) {
-                PollDAO pollDAO = PollDAO.getInstance();
+                PollDAO pollDAO = new PollDAO();
                 request.setAttribute("title", userProfileMDL.getName());
                 request.setAttribute("user", userProfileMDL.getUser());
                 request.setAttribute("polls", pollDAO.getPolls(userProfileMDL.getUserMDL().getKey()));
