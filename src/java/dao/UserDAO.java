@@ -20,8 +20,14 @@ import model.UserProfileMDL;
  */
 public class UserDAO {
 
+    private DAO dao;
+
+    public UserDAO() {
+        dao = new DAO();
+    }
+
     public UserProfileMDL profile(String profile) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         UserProfileMDL userProfileMDL = new UserProfileMDL();
         UserMDL userMDL = new UserMDL();
         try {
@@ -38,13 +44,13 @@ public class UserDAO {
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
         return userProfileMDL;
     }
 
     public String getUserPassword(int id) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM a_users WHERE u_key=?");
@@ -56,13 +62,13 @@ public class UserDAO {
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
         return null;
     }
 
     public Integer deleteAccount(UserMDL userMDL) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("DELETE FROM a_users_profiles WHERE u_p_key=?");
@@ -77,12 +83,12 @@ public class UserDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 
     public Integer changePassword(UserMDL userMDL) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users SET u_password=? WHERE u_key=?");
@@ -94,12 +100,12 @@ public class UserDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 
     public Integer changeUser(UserProfileMDL userProfileMDL) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users_profiles SET u_p_user=? WHERE u_p_key=?");
@@ -111,12 +117,12 @@ public class UserDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 
     public Integer changeEmail(UserMDL userMDL) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users SET u_email=? WHERE u_key=?");
@@ -128,12 +134,12 @@ public class UserDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 
     public Integer editProfile(UserProfileMDL profile) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_users_profiles SET u_p_name=? WHERE u_p_key=?");
@@ -145,12 +151,12 @@ public class UserDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 
     public UserProfileMDL signIn(String email) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         UserProfileMDL profile = new UserProfileMDL();
         UserMDL userMDL = new UserMDL();
         try {
@@ -169,13 +175,13 @@ public class UserDAO {
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
         return profile;
     }
 
     public Integer getIdSignUp(String email) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("SELECT * FROM a_users WHERE u_email=?");
@@ -187,13 +193,13 @@ public class UserDAO {
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
         return null;
     }
 
     public Integer signUp(UserMDL user) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO a_users(u_email,u_password) VALUES(?,?)");
@@ -212,7 +218,7 @@ public class UserDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 }

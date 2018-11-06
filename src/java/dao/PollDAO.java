@@ -23,8 +23,14 @@ import model.UserProfileMDL;
  */
 public class PollDAO {
 
+    private DAO dao;
+
+    public PollDAO() {
+        dao = new DAO();
+    }
+
     public Integer deletePoll(int pollKey, int userProfileKey) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("DELETE FROM a_answers WHERE a_poll_key=?");
@@ -41,12 +47,12 @@ public class PollDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 
     public Integer updatePoll(PollMDL pollMDL) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("UPDATE a_polls SET p_title=?, p_description=?, p_position=? WHERE p_user_key=? AND p_key=?");
@@ -61,12 +67,12 @@ public class PollDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 
     public PollMDL getPoll(int pollKey) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         PollMDL pollMDL = new PollMDL();
         UserProfileMDL userProfileMDL = new UserProfileMDL();
         UserMDL userMDL = new UserMDL();
@@ -90,13 +96,13 @@ public class PollDAO {
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
         return pollMDL;
     }
 
     public List<PollMDL> getPolls(int userKey) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         List<PollMDL> list = new ArrayList();
         try {
             PreparedStatement preparedStatement = connection
@@ -120,13 +126,13 @@ public class PollDAO {
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
         return list;
     }
 
     public Integer addPoll(PollMDL pollMDL) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO a_polls(p_title,p_description,p_position,p_user_key) VALUES(?,?,?,?)");
@@ -140,7 +146,7 @@ public class PollDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 }

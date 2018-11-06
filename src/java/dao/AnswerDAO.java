@@ -24,8 +24,14 @@ import model.UserProfileMDL;
  */
 public class AnswerDAO {
 
+    private DAO dao;
+
+    public AnswerDAO() {
+        dao = new DAO();
+    }
+
     public List<AnswerMDL> getAnswers(int userKey, int pollKey) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         List<AnswerMDL> list = new ArrayList<>();
         try {
             PreparedStatement preparedStatement = connection
@@ -52,13 +58,13 @@ public class AnswerDAO {
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
         return list;
     }
 
     public Integer addAnswer(AnswerMDL answerMDL) {
-        Connection connection = DAO.getConnection();
+        Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("INSERT INTO a_answers(a_stars,a_comment,a_poll_key,a_user_key) VALUES(?,?,?,?)");
@@ -72,7 +78,7 @@ public class AnswerDAO {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             return 0;
         } finally {
-            DAO.closeConnection(connection);
+            dao.closeConnection(connection);
         }
     }
 }

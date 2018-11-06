@@ -17,11 +17,7 @@ import java.util.logging.Logger;
  */
 public class DAO {
 
-    private DAO() {
-
-    }
-
-    protected static Connection getConnection() {
+    protected Connection getConnection() {
         Connection connection = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -32,7 +28,7 @@ public class DAO {
         return connection;
     }
 
-    protected static void closeConnection(Connection connection) {
+    protected void closeConnection(Connection connection) {
         try {
             connection.close();
         } catch (SQLException e) {
