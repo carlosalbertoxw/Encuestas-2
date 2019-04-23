@@ -30,7 +30,9 @@ public class DAO {
 
     protected void closeConnection(Connection connection) {
         try {
-            connection.close();
+            if (connection!=null) {
+                connection.close();
+            }
         } catch (SQLException e) {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, e);
         }

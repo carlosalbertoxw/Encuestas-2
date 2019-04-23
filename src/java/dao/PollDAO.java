@@ -88,7 +88,7 @@ public class PollDAO {
                 pollMDL.setDescription(rs.getString("p_description"));
                 pollMDL.setPosition(rs.getInt("p_position"));
                 userProfileMDL.setName(rs.getString("u_p_name"));
-                userProfileMDL.setUser(rs.getString("u_p_user"));
+                userProfileMDL.setUser(rs.getString("u_p_user_name"));
                 userMDL.setKey(rs.getInt("p_user_key"));
                 userProfileMDL.setUserMDL(userMDL);
                 pollMDL.setUserProfileMDL(userProfileMDL);

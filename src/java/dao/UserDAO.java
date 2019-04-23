@@ -32,14 +32,14 @@ public class UserDAO {
         UserMDL userMDL = new UserMDL();
         try {
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("SELECT * FROM a_users_profiles WHERE u_p_user=?");
+                    .prepareStatement("SELECT * FROM a_users_profiles WHERE u_p_user_name=?");
             preparedStatement.setString(1, profile);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 userMDL.setKey(rs.getInt("u_p_key"));
                 userProfileMDL.setUserMDL(userMDL);
                 userProfileMDL.setName(rs.getString("u_p_name"));
-                userProfileMDL.setUser(rs.getString("u_p_user"));
+                userProfileMDL.setUser(rs.getString("u_p_user_name"));
             }
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
@@ -108,7 +108,7 @@ public class UserDAO {
         Connection connection = dao.getConnection();
         try {
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("UPDATE a_users_profiles SET u_p_user=? WHERE u_p_key=?");
+                    .prepareStatement("UPDATE a_users_profiles SET u_p_user_name=? WHERE u_p_key=?");
             preparedStatement.setString(1, userProfileMDL.getUser());
             preparedStatement.setInt(2, userProfileMDL.getUserMDL().getKey());
             preparedStatement.executeUpdate();
@@ -170,7 +170,7 @@ public class UserDAO {
                 userMDL.setKey(rs.getInt("u_key"));
                 profile.setUserMDL(userMDL);
                 profile.setName(rs.getString("u_p_name"));
-                profile.setUser(rs.getString("u_p_user"));
+                profile.setUser(rs.getString("u_p_user_name"));
             }
         } catch (SQLException e) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
@@ -178,24 +178,6 @@ public class UserDAO {
             dao.closeConnection(connection);
         }
         return profile;
-    }
-
-    public Integer getIdSignUp(String email) {
-        Connection connection = dao.getConnection();
-        try {
-            PreparedStatement preparedStatement = connection
-                    .prepareStatement("SELECT * FROM a_users WHERE u_email=?");
-            preparedStatement.setString(1, email);
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("u_key");
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
-        } finally {
-            dao.closeConnection(connection);
-        }
-        return null;
     }
 
     public Integer signUp(UserMDL user) {
@@ -206,9 +188,18 @@ public class UserDAO {
             preparedStatement.setString(1, user.getEmail());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.executeUpdate();
-            int id = this.getIdSignUp(user.getEmail());
+
+            PreparedStatement preparedStatement3 = connection
+                    .prepareStatement("SELECT * FROM a_users WHERE u_email=?");
+            preparedStatement3.setString(1, user.getEmail());
+            ResultSet rs = preparedStatement3.executeQuery();
+            int id = 0;
+            if (rs.next()) {
+                id = rs.getInt("u_key");
+            }
+
             PreparedStatement preparedStatement2 = connection
-                    .prepareStatement("INSERT INTO a_users_profiles(u_p_key,u_p_user,u_p_name) VALUES(?,?,?)");
+                    .prepareStatement("INSERT INTO a_users_profiles(u_p_key,u_p_user_name,u_p_name) VALUES(?,?,?)");
             preparedStatement2.setInt(1, id);
             preparedStatement2.setString(2, "usuario" + id);
             preparedStatement2.setString(3, "Usuario" + id);
